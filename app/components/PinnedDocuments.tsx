@@ -3,7 +3,8 @@ import {
   DndContext,
   closestCenter,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -79,10 +80,17 @@ function PinnedDocuments({
     setItems(pins.map((pin) => pin.documentId));
   }, [pins]);
 
+  // A mouse drag starts once the pointer moves, so holding the button still
+  // counts as a click and navigates. Touch keeps a delay so scrolling works.
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MouseSensor, {
       activationConstraint: {
-        delay: 100,
+        distance: 5,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
         tolerance: 5,
       },
     }),
